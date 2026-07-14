@@ -1,0 +1,19 @@
+title: notes
+description: topic notes
+
+markdown: CommonMarkGhPages
+commonmark:
+  options: ["SMART", "FOOTNOTES"]
+  extensions: ["strikethrough", "autolink", "table", "tagfilter"]
+
+plugins:
+  - jekyll-commonmark-ghpages
+  - jekyll-optional-front-matter
+  - jekyll-default-layout
+  - jekyll-titles-from-headings
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - vendor

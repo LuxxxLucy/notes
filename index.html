@@ -1,0 +1,16 @@
+---
+layout: default
+title: Notes
+---
+<h1>Notes</h1>
+<p>A collection of my notes on different topics.</p>
+{% assign notes = site.html_pages | where_exp: "p", "p.path contains 'content/'" | sort: "title" %}
+{% if notes.size == 0 %}
+<p><em>No notes published yet.</em></p>
+{% else %}
+<ul>
+{% for note in notes %}
+  <li><a href="{{ note.url | relative_url }}">{{ note.title }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
