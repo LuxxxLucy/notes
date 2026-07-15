@@ -21,8 +21,6 @@ Note that newer architectures might support more, like 57 bits address space.
 
 The virtual address space is organized in separate segments:
 (note that the actual order is reverse, i.e. the text segments starts at the lowest address.)
-
-
 1. Text(code) segment: the compiled instructions, no write permission, it is read-only and executable.
 2. Data segment: global and static variables that are initialized.
 3. BSS segment: global and static variables that are zero- uninitialized.
@@ -149,3 +147,77 @@ sometimes we need to think about the algorithm (for the logical things we need t
 Sometimes we need to think about the data structure,
 sometimes we need think about the struct (padding).
 
+### Another way is to use large pages.
+
+x86-64 supports pages with 2 MB sizes, and on many systems 1 GB pages as well.
+
+### Issues with `munmap` on multi-core systems: TLB shootdown
+
+When you want to return the page, on multi-core system you need to notify the other cores.
+This is because each core has its own TLB entries. In this case an interupt (inter-processor interupt) to let each core's TLB caches to invalid that specific TLB entry. This is called TLB shootdown.
+
+> Modern CPUs have a hardware mechanism called the APIC (Advanced Programmable Interrupt Controller) that lets one CPU core send an interrupt directly to another. This is an inter-processor interrupt, or IPI. Unlike a regular device interrupt, which is triggered by external hardware (a disk, a network card), an IPI is sent by software running on one core to deliberately interrupt a different core. This makes a cross-core coordination and is costly.
+
+## Cycle for memory access
+
+| Scenario                                                 | What happens                                   |                    Approximate cost |
+| -------------------------------------------------------- | ---------------------------------------------- | ----------------------------------: |
+| **L1 TLB hit**                                           | Translation found in the L1 TLB                |                      **0–1 cycles** |
+| **L1 TLB miss, L2/STLB hit**                             | Translation found in the second-level TLB      |                     **5–10 cycles** |
+| **All TLB levels miss; page-table walk hits CPU caches** | Page-table entries are found in CPU caches     |                   **10–100 cycles** |
+| **Page-table walk reaches DRAM**                         | Page-table entries must be fetched from memory |                 **100–500+ cycles** |
+| **Minor page fault**                                     | Kernel resolves the fault without storage I/O  |             **1,000–30,000 cycles** |
+| **Major page fault**                                     | Page must be loaded from SSD or disk           | **3,000,000–3,000,000,000+ cycles** |
+
+
+## NUMA (Non-Uniform Memory Access)
+
+Physical memory is divided into NUMA nodes, each directly attached to one CPU socket. A CPU can access memory on any node, but local access is noticeably faster than remote access, which must traverse the inter-socket interconnect.
+
+Problems happen you have multiple CPU sockets, each with its own local RAM, but sometimes you will need to access the memory from another socket's RAM, with inter-socket interconnect,
+this would be 2 or 3 times longer.
+
+We in virtual memory has no way of controlling easily, and it follows a first-touch policy, the part that is first used will be load to that core's local RAM.
+
+Other than that we have the `mbind` can control which part loads on which.
+
+NUMA-sensitive workloads typically pin threads to specific CPUs using `taskset` or `pthread_setaffinity_np`
+
+## Is system under memory pressure?
+
+`/proc/<pid>/maps` list the VMA.
+`pmap -x <pid>` is similar.
+
+`smaps` is maps extended with a full accounting breakdown for every VMA:
+- Rss (Resident Set Size): how many kilobytes of that VMA are currently in physical RAM
+
+For the system-wide picture, `/proc/meminfo`, check:
+- MemAvailable: the kernel’s estimate of how much can be freed without touching swap,
+- Cached: page cache, most of which is reclaimable,
+- Dirty and Writeback: pages queued for or actively being written back,
+- AnonPages: anonymous pages currently in RAM
+- SwapTotal, SwapFree: the swap related fields
+
+For Page faults:
+- Minor Page Fault: page fault without any real disk I/O.
+- Major Page Fault: actual disk I/O.
+
+`perf stat -e page-faults,major-faults ./your-program`
+
+`vmstat 1` samples every second. The columns to watch are si and so (swap-in and swap-out in KiB per second).
+
+Pressure Stall Information (PSI) at `/proc/pressure/memory`: it reports the fraction of time tasks spent stalled waiting for memory.
+
+For the TLB:
+`perf stat -e dTLB-load-misses,dTLB-store-misses,iTLB-load-misses ./your-program`
+
+`dTLB-load-misses` and `dTLB-store-misses` count data TLB misses on loads and stores respectively. `iTLB-load-misses` tracks instruction TLB misses, which matters when the code is large.
+
+NUMA related:
+- `numactl --hardware`: shows NUMA topology.
+- `numastat -p <pid>` shows where a process’s pages actually live
+
+
+## Reference
+
+[Virtual Memory From First Principles, Abhinav Upadhyay](https://blog.codingconfessions.com/p/virtual-memory?utm_source=bonobopress&utm_medium=newsletter&utm_campaign=2319)
