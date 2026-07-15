@@ -136,17 +136,6 @@ Why dense array is faster than hash table in terms of accessing it:
 1. for pages, we have less TLB missing rate, with fewer TLB missing rate, it would not be slowed down.
 2. for inside the page, the cache line prefetch also make it faster.
 
-### Tips for software side: Design user program with these in mind:
-
-1. less access of memory.
-2. less pages involved.
-3. less actual translation of page table walk.
-3. less TLB entries needed.
-
-sometimes we need to think about the algorithm (for the logical things we need to do),
-Sometimes we need to think about the data structure,
-sometimes we need think about the struct (padding).
-
 ### Another way is to use large pages.
 
 x86-64 supports pages with 2 MB sizes, and on many systems 1 GB pages as well.
@@ -217,6 +206,20 @@ NUMA related:
 - `numactl --hardware`: shows NUMA topology.
 - `numastat -p <pid>` shows where a process’s pages actually live
 
+## Optimization for memory access in programming
+
+Tips for software side: Design user program with these in mind:
+
+1. less access of memory.
+2. less pages involved.
+3. less actual translation of page table walk.
+4. less TLB entries needed.
+
+sometimes we need to think about the algorithm (for the logical things we need to do),
+Sometimes we need to think about the data structure,
+sometimes we need think about the struct (padding).
+
+In fact there is an interesting blog [slowest add: Data Access Patterns That Makes Your CPU Really Angry](https://blog.weineng.me/posts/slowest_add/), which it does not seek to optimize the task of summing over an array, rather it exploits the memory access mechanism to find a deliberately slowest way to do this task, it is an interesting read.
 
 ## Reference
 
