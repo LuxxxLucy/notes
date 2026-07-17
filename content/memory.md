@@ -1,3 +1,7 @@
+---
+description: Notes on virtual memory in the Linux x86-64 kernel, covering address translation, paging, and the memory hierarchy.
+---
+
 # Virtual Memory
 
 Note: all is assuming a linux kernel with x86-64 architecture.

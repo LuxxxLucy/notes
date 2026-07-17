@@ -1,4 +1,8 @@
-# optimization
+---
+description: My notes on system optimization, reducing latency and compute cost across the software stack through workload and resource analysis, observability, and profiling.
+---
+
+# Optimization
 
 General tricks of optimization
 
