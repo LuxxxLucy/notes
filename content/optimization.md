@@ -4,7 +4,45 @@ description: My notes on system optimization, reducing latency and compute cost 
 
 # Optimization
 
-General tricks of optimization
+About optimization
+
+## Goal
+
+The general goals of system optimization is to improve end-user experience.
+
+It is in fact pretty loose and would have included the product feature.
+
+But in narrow sense, we often care about the two basic aspects:
+1. reduce latency.
+2. reducing computation cost.
+
+The object of optimization is, of course, the entire software stack,
+from the application on the top, and all the way down to the bare metal (including system software, OS kernel, and the hardware).
+
+## Analysis
+
+We can often start analysis from two complementary views:
+1. the analysis of the workload.
+2. the analysis of the resources.
+
+## Observability
+
+TODO: what are the observability tools? read more
+
+1. counters, statistics, metrics.
+2. profiling.
+3. tracing.
+
+I would often opt to a customized instrumentation (mostly static) for the code (after that I got the main overview of the program working), and then make it a customized tracing tool which would provide me data so that analysis and reasoning of my hypothesis can be performed.
+
+## Experimentation
+
+TODO: elaborate more on this direction.
+
+apply experiment: applying a synthetic workload to the system and measure its performance.
+
+1. macro experimentation (end to end)
+2. micro experimentation: focused on a particular component.
 
 ## branch misprediction
 
@@ -24,3 +62,10 @@ One of the most effective ways to reduce mispredictions is to simply avoid branc
 
 Now this is a memory access related issue so might consult [memory.md](./memory.md).
 
+## Profile
+
+## De-redundancy
+
+## Fast Path
+
+## Wholesale rewrite
