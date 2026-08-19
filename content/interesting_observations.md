@@ -10,14 +10,14 @@ A list of observations collected from papers, blogs, talks, and conversations.
 
 The theory of complementary learning systems in cognitive neuroscience: a combination of episodic (in the hippocampus) and statistical (in the neocortex) learning is important for human task solving. The hippocampus rapidly incorporates new observations to solve tasks in an example-based way, while the neocortex gradually learns abstract rules with greater power and generality.
 
-Source: <https://www.ncbi.nlm.nih.gov/pubmed/7624455>, <https://www.cell.com/trends/cognitive-sciences/fulltext/S1364-6613(16)30043-2>
+Source: [Why there are complementary learning systems in the hippocampus and neocortex. McClelland, McNaughton, O'Reilly, 1995.](https://www.ncbi.nlm.nih.gov/pubmed/7624455), [What Learning Systems do Intelligent Agents Need? Complementary Learning Systems Theory Updated. Kumaran, Hassabis, McClelland, 2016.](https://www.cell.com/trends/cognitive-sciences/fulltext/S1364-6613(16)30043-2)
 
 
 ## People can learn concepts from positive examples alone
 
 Also, rapid learning from small sample sizes is impossible without a good prior. Prior is the the mechanism by which background knowledge can be brought to bear on a problem.
 
-Source: [Word learning as Bayesian inference. Xu Fei, Tenenbaum JB.](https://www.ncbi.nlm.nih.gov/pubmed/17500627)
+Source: [Word learning as Bayesian inference. Fei Xu, Joshua B. Tenenbaum.](https://www.ncbi.nlm.nih.gov/pubmed/17500627)
 
 ## Smell and taste is quite hard to imagine, while vision is easy to imagine
 
