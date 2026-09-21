@@ -4,13 +4,14 @@ title: Notes
 ---
 <h1>Notes</h1>
 <p>A collection of my notes on different topics.</p>
-{% assign notes = site.html_pages | where_exp: "p", "p.path contains 'content/'" | sort: "title" %}
+{% assign notes = site.html_pages | where_exp: "p", "p.path contains 'content/'" | sort: "updated", "first" | reverse %}
 {% if notes.size == 0 %}
 <p><em>No notes published yet.</em></p>
 {% else %}
-<ul>
+<ul class="notes">
 {% for note in notes %}
-  <li><a href="{{ note.url | relative_url }}">{{ note.title }}</a></li>
+  <li><a href="{{ note.url | relative_url }}">{{ note.title }}</a>
+    {% if note.created %}<small>{{ note.created }}{% if note.updated != note.created %}, last updated {{ note.updated }}{% endif %}</small>{% endif %}</li>
 {% endfor %}
 </ul>
 {% endif %}
